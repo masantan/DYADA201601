@@ -1,5 +1,11 @@
+// To solve wide char problem
+// Consult http://www.cprogramming.com/tutorial/unicode.html
+// http://www.nubaria.com/en/blog/?p=289
+
 #include <iostream>
 #include <string>
+#include <cwctype>
+#include <cwchar>
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
@@ -7,27 +13,46 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <clocale>
+#include <locale>
+#include <codecvt>
+#include <fstream>
+#include <cstdlib>
 
-#define sz(a) ((a).length())
-#define str(a) ((a).c_str())
+#define ln(a)  ( (a).length())
+#define str(a) ( (a).c_str() )
 
 using namespace std;
 
-const  char *known_message [ ] = {
-"El","veloz","murciélago","hindú",
-"comía", "feliz", "cardillo", "y",
-"kiwi", "cuando", "la", "cigüeña",
-"tocaba","el", "saxofón","detrás",
-"del",  "palenque", "de", "paja"};
-
-vector <string> message(known_message, known_message+20);
+vector < wstring > known_message;
 
 int main()
 {
     int testcases;
-    string line, word;
+    wstring line, word;
 
-    scanf("%d\n\n",&testcases);
+
+    const locale empty_locale = locale::global();
+    typedef codecvt_utf8<wchar_t> converter_type;
+    const converter_type* converter = new converter_type;
+    const locale utf8_locale = locale(empty_locale, converter);
+    wifstream stream(L"test.txt");
+    stream.imbue(utf8_locale);
+    wstring line;
+    getline(stream, line);
+    system("pause");
+
+    // Get the original message and split it in words
+    getline( wcin, line );
+    wistringstream msg (line);
+    while(msg >> word)
+    {
+        known_message.push_back(word);
+        wcout << word << " " << wcslen(word.c_str()) << " " << ln(word)  << " "<< endl << endl;
+    }
+
+
+    /*scanf("%d\n\n",&testcases);
 
     while( testcases-- )
     {
@@ -67,6 +92,7 @@ int main()
         }
         if( testcases > 1 ) puts("");
     }
+    */
 
     return 0;
 }
