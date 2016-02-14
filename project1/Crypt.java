@@ -49,6 +49,7 @@ public class Crypt{
 		// Some Utils variables
 		String line;
 		ArrayList<Integer> sizes_known=new ArrayList<Integer>();
+		ArrayList<String> old_msg = new ArrayList<String>();
 
 		// First process the known message	
 		in = new BufferedReader( new InputStreamReader(
@@ -58,8 +59,8 @@ public class Crypt{
 			
 		   String[] splited = line.split("\\s+");
         	for (String word : splited) {
-            	//System.out.println(word + " " + word.length());
             	sizes_known.add(word.length());
+            	old_msg.add(word);
         	}
 		}
 		// First process the known message
@@ -85,9 +86,30 @@ public class Crypt{
 			ArrayList<Integer> matches = z_algorithm(sizes_known,sizes_msg);
 			for(int i=0; i<matches.size(); i++)
 			{
-				// We have an occurrence, lets propose it as a candidate
-				System.out.println("Occurence at " + matches.get(i) );
-				System.out.println("start in " + new_msg.get(matches.get(i)));
+				HashMap <Character,Character> dictionary = null;
+				dictionary = new HashMap<Character,Character> ();
+				boolean candidate = true;
+				int idx = matches.get(i);
+				while( idx < new_msg.size() && candidate )
+				{
+					int j = 0;
+					while(j < new_msg.get(idx).length() && candidate)
+					{
+						Character next = new_msg.get(idx).charAt(j);
+						Character prev = old_msg.get(idx-matches.get(i)).charAt(j);
+						if( dictionary.containsKey(next) &&  !dictionary.get(next).equals(prev) )
+						{
+							candidate = false;
+							System.out.println("prev " + prev + " next " + next );
+							break;
+						}
+						dictionary.put(next,prev);
+						j++;
+					}
+					idx++;
+				}
+				if(candidate) System.out.println("We have a candidate :)");
+				else System.out.println("We have nothing :(");
 			}
 		}	
     } catch (UnsupportedEncodingException e) {
