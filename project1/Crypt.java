@@ -4,10 +4,10 @@ import java.lang.*;
 
 public class Crypt{
 	public static ArrayList<Integer> z_algorithm(
-		ArrayList<Integer> S, ArrayList< Integer > T)
+		ArrayList<Integer> P, ArrayList< Integer > T)
 	{
-		ArrayList<Integer> z, matches;
-		int m = S.size();
+		ArrayList<Integer> z,matches,S=new ArrayList<Integer>(P);
+		int m = P.size();
 		S.add(-1); S.addAll(T);
 		
 		int L = 0, R = 0, n = S.size();
@@ -34,10 +34,9 @@ public class Crypt{
 			}
 			if( z.get(i) == m )
 			{
-				matches.add(i);
+				matches.add(i-m-1);
 			}
 		}
-		System.out.println("matches " + matches.size());
 		return matches;
 	}
 	public static void main(String[] args) {
@@ -75,20 +74,20 @@ public class Crypt{
 			while ((line = in2.readLine()) != null )
 			{
 				if(line.length() == 0) break;
-				//System.out.println("line = " + line);
 			    String[] splited = line.split("\\s+");
 	        	for (String word : splited) {
-	            	//System.out.println(word + " " + word.length());
 	            	sizes_msg.add(word.length());
 	            	new_msg.add(word);
 	        	}
 			}
-			//System.out.println("Size of msg " + sizes_msg.size());
+			// We get the message and split it in words, now we have to look for
+			// posibles matches at least in size words
 			ArrayList<Integer> matches = z_algorithm(sizes_known,sizes_msg);
 			for(int i=0; i<matches.size(); i++)
 			{
-				System.out.println("Occurence at " + matches.get(i));
-				System.out.println("start in " + new_msg.get(matches.get(i) - sizes_known.size()));
+				// We have an occurrence, lets propose it as a candidate
+				System.out.println("Occurence at " + matches.get(i) );
+				System.out.println("start in " + new_msg.get(matches.get(i)));
 			}
 		}	
     } catch (UnsupportedEncodingException e) {
