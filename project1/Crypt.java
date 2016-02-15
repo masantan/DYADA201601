@@ -68,7 +68,7 @@ public class Crypt{
                 new FileInputStream(fm_dir), "UTF8"));
 		int testCases = Integer.parseInt(in2.readLine());
 		line = in2.readLine();
-		while( testCases-- > 0 )
+		for(int test=1; test<=testCases; test++)
 		{
 			ArrayList<Integer> sizes_msg = new ArrayList<Integer>();
 			ArrayList<String> new_msg = new ArrayList<String>();
@@ -85,7 +85,7 @@ public class Crypt{
 			// posibles matches at least in size words
 			ArrayList<Integer> matches = z_algorithm(sizes_known,sizes_msg);
 			boolean answer = false;
-			for(int i=0; i<matches.size(); i++)
+			for(int i=0; i<matches.size() && !answer; i++)
 			{
 				HashMap <Character,Character> dictionary;
 				dictionary = new HashMap<Character,Character> ();
@@ -145,8 +145,7 @@ public class Crypt{
 							System.out.print(decrypted_msg.get(kk));
 						}
 						answer = true;
-						System.out.println("\n******************************* ");
-						System.out.println("-------------------------------\n");
+						System.out.println("\n");
 					} else {
 						System.out.println("We had a candidate, we had :(");
 					}
