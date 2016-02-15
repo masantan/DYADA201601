@@ -86,27 +86,31 @@ public class Crypt{
 			ArrayList<Integer> matches = z_algorithm(sizes_known,sizes_msg);
 			for(int i=0; i<matches.size(); i++)
 			{
-				HashMap <Character,Character> dictionary = null;
+				HashMap <Character,Character> dictionary;
 				dictionary = new HashMap<Character,Character> ();
 				boolean candidate = true;
-				int idx = matches.get(i);
-				while( idx < new_msg.size() && candidate )
+				int new_id = matches.get(i);
+				int old_id = 0;
+				while( old_id < old_msg.size() && candidate )
 				{
 					int j = 0;
-					while(j < new_msg.get(idx).length() && candidate)
+					while(j < new_msg.get(new_id).length() && candidate)
 					{
-						Character next = new_msg.get(idx).charAt(j);
-						Character prev = old_msg.get(idx-matches.get(i)).charAt(j);
-						if( dictionary.containsKey(next) &&  !dictionary.get(next).equals(prev) )
+						Character next = Character.toLowerCase(new_msg.get(new_id).charAt(j));
+						Character prev = Character.toLowerCase(old_msg.get(old_id).charAt(j));
+						if( dictionary.containsKey(next) )
 						{
-							candidate = false;
-							System.out.println("prev " + prev + " next " + next );
-							break;
+							if( dictionary.get(next) != prev )
+							{
+								candidate = false;
+								break;
+							}
 						}
 						dictionary.put(next,prev);
 						j++;
 					}
-					idx++;
+					new_id++;
+					old_id++;
 				}
 				if(candidate) System.out.println("We have a candidate :)");
 				else System.out.println("We have nothing :(");
