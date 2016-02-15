@@ -60,7 +60,7 @@ public class Crypt{
 		   String[] splited = line.split("\\s+");
         	for (String word : splited) {
             	sizes_known.add(word.length());
-            	old_msg.add(word);
+            	old_msg.add(word.toLowerCase());
         	}
 		}
 		// First process the known message
@@ -78,12 +78,13 @@ public class Crypt{
 			    String[] splited = line.split("\\s+");
 	        	for (String word : splited) {
 	            	sizes_msg.add(word.length());
-	            	new_msg.add(word);
+	            	new_msg.add(word.toLowerCase());
 	        	}
 			}
 			// We get the message and split it in words, now we have to look for
 			// posibles matches at least in size words
 			ArrayList<Integer> matches = z_algorithm(sizes_known,sizes_msg);
+			boolean answer = false;
 			for(int i=0; i<matches.size(); i++)
 			{
 				HashMap <Character,Character> dictionary;
@@ -94,10 +95,12 @@ public class Crypt{
 				while( old_id < old_msg.size() && candidate )
 				{
 					int j = 0;
+					String nWord = new_msg.get(new_id);
+					String oWord = old_msg.get(old_id);
 					while(j < new_msg.get(new_id).length() && candidate)
 					{
-						Character next = Character.toLowerCase(new_msg.get(new_id).charAt(j));
-						Character prev = Character.toLowerCase(old_msg.get(old_id).charAt(j));
+						Character next = nWord.charAt(j);
+						Character prev = oWord.charAt(j);
 						if( dictionary.containsKey(next) )
 						{
 							if( dictionary.get(next) != prev )
@@ -112,8 +115,46 @@ public class Crypt{
 					new_id++;
 					old_id++;
 				}
-				if(candidate) System.out.println("We have a candidate :)");
-				else System.out.println("We have nothing :(");
+				if(candidate) {
+					// Now we have to iterate over all the words in array excluding 
+					// the indices which are part of the encrypted message 
+
+					ArrayList< String > decrypted_msg = new ArrayList< String >();
+					int L = matches.get(i), R = matches.get(i) + old_msg.size()-1;
+					for(int id = 0; id < new_msg.size() && candidate; id++)
+					{
+						if(id>=L && id<=R) continue;
+						String dWord = "", eWord = new_msg.get(id);
+						for(int j = 0; j < new_msg.get(id).length(); j++)
+						{
+							Character next = eWord.charAt(j);
+							if( !dictionary.containsKey(next) )
+							{
+								candidate = false;
+								break;
+							}
+							dWord += dictionary.get(next);
+						}
+						if(candidate) decrypted_msg.add(dWord);
+					}
+					if(candidate)
+					{
+						for(int kk=0; kk<decrypted_msg.size(); kk++)
+						{
+							if(kk > 0) System.out.print(" ");
+							System.out.print(decrypted_msg.get(kk));
+						}
+						answer = true;
+						System.out.println("\n******************************* ");
+						System.out.println("-------------------------------\n");
+					} else {
+						System.out.println("We had a candidate, we had :(");
+					}
+				}
+			}
+			if(!answer)
+			{
+				System.out.println("Sorry something went grong!");
 			}
 		}	
     } catch (UnsupportedEncodingException e) {
