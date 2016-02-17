@@ -43,9 +43,13 @@ public class Crypt{
 		BufferedReader in = null, in2 = null;
 	try {
 		// Files which we will work with
-		//String file_name = "CKinput01.txt";
-		//String file_name = "CKinput02.txt";
-		String file_name = "CKinput03.txt";
+		String file_name;
+		try
+		{
+			file_name = args[0];
+		} catch(Exception e) {
+			file_name = "stdin";
+		}
 
 		File km_dir = new File("known_message.txt");
 		File fm_dir = new File(file_name);
@@ -74,6 +78,7 @@ public class Crypt{
 		line = in2.readLine();
 		for(int test=1; test<=testCases; test++)
 		{
+			if(test>1) System.out.println(""); //Print the line between cases
 			ArrayList<Integer> sizes_msg = new ArrayList<Integer>();
 			ArrayList<String> new_msg = new ArrayList<String>();
 			while ((line = in2.readLine()) != null )
@@ -91,8 +96,8 @@ public class Crypt{
 			boolean answer = false;
 			for(int i=0; i<matches.size() && !answer; i++)
 			{
-				HashMap <Character,Character> dictionary;
-				dictionary = new HashMap<Character,Character> ();
+				HashMap <Character,Character> map;
+				map = new HashMap<Character,Character> ();
 				boolean candidate = true;
 				int new_id = matches.get(i);
 				int old_id = 0;
@@ -105,15 +110,15 @@ public class Crypt{
 					{
 						Character next = nWord.charAt(j);
 						Character prev = oWord.charAt(j);
-						if( dictionary.containsKey(next) )
+						if( map.containsKey(next) )
 						{
-							if( dictionary.get(next) != prev )
+							if( map.get(next) != prev )
 							{
 								candidate = false;
 								break;
 							}
 						}
-						dictionary.put(next,prev);
+						map.put(next,prev);
 						j++;
 					}
 					new_id++;
@@ -132,32 +137,39 @@ public class Crypt{
 						for(int j = 0; j < new_msg.get(id).length(); j++)
 						{
 							Character next = eWord.charAt(j);
-							if( !dictionary.containsKey(next) )
+							if( !map.containsKey(next) )
 							{
 								candidate = false;
 								break;
 							}
-							dWord += dictionary.get(next);
+							dWord += map.get(next);
 						}
 						if(candidate) decrypted_msg.add(dWord);
 					}
 					if(candidate)
 					{
+						int charPrinted = 0;
 						for(int kk=0; kk<decrypted_msg.size(); kk++)
 						{
-							if(kk > 0) System.out.print(" ");
-							System.out.print(decrypted_msg.get(kk));
+							if(charPrinted > 0) System.out.print(" ");
+							System.out.print(decrypted_msg.get(kk).toUpperCase());
+							charPrinted += decrypted_msg.get(kk).length();
+							if( charPrinted > 65 ) // Adjusted to 65 columns
+							{
+								charPrinted = 0;
+								System.out.println("");
+							}
 						}
 						answer = true;
-						System.out.println("\n");
+						System.out.println("");
 					} else {
-						System.out.println("We had a candidate, we had :(");
+						System.out.println("NO SE ENCONTRO SOLUCIÓN");
 					}
 				}
 			}
 			if(!answer)
 			{
-				System.out.println("Sorry something went grong!");
+				System.out.println("NO SE ENCONTRO SOLUCIÓN");
 			}
 		}	
     } catch (UnsupportedEncodingException e) {
