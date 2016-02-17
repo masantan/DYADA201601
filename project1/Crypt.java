@@ -6,7 +6,7 @@ public class Crypt{
 	public static ArrayList<Integer> z_algorithm(
 		ArrayList<Integer> P, ArrayList< Integer > T)
 	{
-		ArrayList<Integer> z,matches,S=new ArrayList<Integer>(P);
+		ArrayList<Integer> z, matches, S=new ArrayList<Integer>(P);
 		int m = P.size();
 		S.add(-1); S.addAll(T);
 		
@@ -43,12 +43,16 @@ public class Crypt{
 		BufferedReader in = null, in2 = null;
 	try {
 		// Files which we will work with
+		//String file_name = "CKinput01.txt";
+		//String file_name = "CKinput02.txt";
+		String file_name = "CKinput03.txt";
+
 		File km_dir = new File("known_message.txt");
-		File fm_dir = new File("stdin");
+		File fm_dir = new File(file_name);
 		
 		// Some Utils variables
 		String line;
-		ArrayList<Integer> sizes_known=new ArrayList<Integer>();
+		ArrayList<Integer> sizes_known = new ArrayList<Integer>();
 		ArrayList<String> old_msg = new ArrayList<String>();
 
 		// First process the known message	
