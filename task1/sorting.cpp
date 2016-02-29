@@ -2,19 +2,51 @@
 #include <cstdio>
 #include <algorithm>
 #include <pthread.h>
+#include <time.h>
+#include <sys/time.h>
+
+typedef long long int i64;
+using namespace std;
 
 #define MAXN 1234567 // ~ 10^6
 
-using namespace std;
 
-typedef long long int i64;
+/** Utilities BEGIN **/
+// Time measurement
+#define measure(name,fun,arr,sz,t1,t2,et) do{\
+		gettimeofday(&t1, 0);\
+		fun(arr,sz);\
+		gettimeofday(&t2, 0);\
+		et = (t2.tv_sec - t1.tv_sec) * 1000000.0;\
+		et += (t2.tv_usec - t1.tv_usec);\
+		printf("It took %7.0lf(us) sort array of size %d using %s\n",et,sz,name);\
+	}while(0);
 
-// We declare variables
+inline void print_array(int v[],int size)
+{
+	for(int i=0; i<size; i++)
+	{
+		printf("%s%d",(i?" ":""),v[i]);
+	}
+	printf("\n");
+}
+/** Utilities END **/
+
+
+
+
+
+// Global variables
 int raw[MAXN];
-// Merge Variables
+
+// Merge Sort Variables
 int m_array[MAXN], m_aux[MAXN];
-// Heap Variables
+
+// Heap Sort Variables
 int h_array[MAXN], h_aux[MAXN], h_size, h_root;
+
+// Quick Sort  Variables
+int q_array[MAXN];
 
 
 //  Merge
@@ -58,13 +90,7 @@ i64 merge_sort(int data[], int size)
 		m_array[i] = m_aux[i] = data[i];
 	}
 	i64 movs = merge(m_array,m_aux,0,size-1);
-
-	printf("It takes %lld moves to sort\n",movs);
-	for(int i = 0; i < size; i++)
-	{
-		printf("%d ",m_array[i]);
-	}printf("\n");
-
+	//print_array(m_array,size);
 	return movs;
 }
 
@@ -156,14 +182,12 @@ i64 heap_sort(int data[], int size)
 	{
 		movs += heap_insert(h_aux, data[i-1]);
 	}
-
-	printf("It takes %lld moves to sort\n",movs);
+	// Extract ordered elements
 	for(int i = 0; i < size; i++)
 	{
 		movs += heap_delete(h_aux, h_array[i]);
-		printf("%d ",h_array[i]);
-	}printf("\n");
-
+	}
+	//print_array(h_array,size);
 	return movs;
 }
 
@@ -171,8 +195,10 @@ i64 heap_sort(int data[], int size)
 int main()
 {
 	int array_size;
+	struct timeval t_start,t_end;
+	double elapsed_time;
 
-	while(scanf("%d",&array_size) != EOF)
+	while(scanf("%d",&array_size) != EOF && array_size)
 	{
 	/*
 	 * puts("Please specify the size of array:");
@@ -183,13 +209,10 @@ int main()
 		{
 			scanf("%d",&raw[i]);
 		}
-		// Call sorting algorithms
-
-		// Call merge sort
-		merge_sort(raw, array_size);
-
-		// Call Heap sort
-		heap_sort(raw, array_size);
+		//measure(name,fun,arr,sz,t1,t2,et)
+		measure("Merge Sort",merge_sort,raw,array_size,t_start,t_end,elapsed_time);
+		measure("Heap Sort",heap_sort,raw,array_size,t_start,t_end,elapsed_time);
+		puts("");
 	}
 
 	return 0;
