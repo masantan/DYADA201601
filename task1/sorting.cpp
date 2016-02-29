@@ -192,6 +192,53 @@ i64 heap_sort(int data[], int size)
 }
 
 
+// partition
+i64 partition(int A[], int p, int r, int &i)
+{
+	i64 movs = 0LL;
+	int x = A[r]; // We need to change this after
+	i = p-1;
+	for(int j=p; j<r; j++)
+	{
+		if(A[j]<=x)
+		{
+			++i;
+			swap(A[i],A[j]);
+			++movs;
+		}
+	}
+	swap(A[++i],A[r]);
+	return ++movs;
+}
+
+// quick sort 
+i64 q_sort(int A[], int p, int r)
+{
+	i64 movs = 0LL;
+	if(p < r)
+	{
+		int q;
+		movs += partition(A,p,r,q);
+		movs += q_sort(A, p, q-1);
+		movs += q_sort(A, q+1, r);
+	}
+	return movs;
+}
+
+// Quick Sort
+i64 quick_sort(int data[], int size)
+{
+	// Initialize
+	for(int i=0; i<size; i++)
+	{
+		q_array[i] = data[i];
+	}
+	i64 movs = q_sort(q_array,0,size-1);
+	//print_array(q_array,size);
+	return movs;
+}
+
+
 int main()
 {
 	int array_size;
@@ -212,6 +259,7 @@ int main()
 		//measure(name,fun,arr,sz,t1,t2,et)
 		measure("Merge Sort",merge_sort,raw,array_size,t_start,t_end,elapsed_time);
 		measure("Heap Sort",heap_sort,raw,array_size,t_start,t_end,elapsed_time);
+		measure("Quick Sort",quick_sort,raw,array_size,t_start,t_end,elapsed_time);
 		puts("");
 	}
 
