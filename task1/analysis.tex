@@ -159,16 +159,16 @@ i64 merge_sort(int data[], int size)
 i64 merge(int v[], int va[], int L, int R) {
     i64 cnt = 0LL;
     if(L<R) {
-        	int mid = (L+R)/2;
+        int mid = (L+R)/2;
         cnt += merge(va, v, L, mid);
-        	cnt += merge(va, v, mid+1, R);
-        	int i=L, j=mid+1, k=L;%
-        	while( i<=mid && j<=R ) {
-            	if(va[i]<=va[j])
-                	v[k++]=va[i++];
-            	else {
-                	v[k++]=va[j++];
-                	cnt+=(mid+1) - i;
+        cnt += merge(va, v, mid+1, R);
+        int i=L, j=mid+1, k=L;
+        while( i<=mid && j<=R ) {
+            if(va[i]<=va[j])
+                v[k++]=va[i++];
+            else {
+                v[k++]=va[j++];
+                cnt+=(mid+1) - i;
         } }
         while(i<=mid) v[k++]=va[i++];
         while(j<= R ) v[k++]=va[j++];
@@ -223,7 +223,7 @@ void heap_insert(int heap[], int val) {
             break;
         swap(heap[node], heap[parent]);
         node = parent;
- 	}
+        }
 }
 \end{lstlisting}
 \end{block}
@@ -237,15 +237,15 @@ void heap_delete(int heap[], int &val) {
     val = heap[h_root]; h_size--;
     if(h_size >= h_root)
     {   // Set the last element
-        	heap[h_root] = heap[h_size+1];
+        heap[h_root] = heap[h_size+1];
         int node, small=h_root;
         do{	node = small;
-            	int left = node << 1;
+            int left = node << 1;
             int right = left + 1;
             if(left<=h_size && heap[left]<heap[small])
-                	small = left;
+                small = left;
             if(right<=h_size && heap[right]<heap[small])
-                	small = right;
+                small = right;
             swap(heap[node],heap[small]);
         }while(small != node);
     } }
@@ -299,6 +299,14 @@ $Input$ & Ordered  & Ordered Inverse &  Almost ordered & Random \\ %\hline
 \end{tabular}
 \caption{Time spent in us}
 \end{table}
+\end{frame}
+
+\section{Comparison}
+\begin{frame}
+\frametitle{Conclusion}
+\begin{block}{Conclusion}
+Based on data obtained, we can conclude the algorithm better fit our propose in time complexity is merge sort, also we could notice an improvement when instead of take the last element in partition section of quick sort we take a random pivot. 
+\end{block}
 \end{frame}
 
 \end{document} 
