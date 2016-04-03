@@ -1,39 +1,33 @@
-#include <iostream>
-#include <stdio.h>
-#include <memory.h>
+/*
+ * Original link problem: https://goo.gl/0vXz6m
+ * Idea reference: http://goo.gl/aLhnm2
+ * Implentation reference: http://goo.gl/xKCz23
+ */
 
-#define MAXN 10000
+#include <iostream>
+#include <cstdio>
+
+#define maxn 20001
+  
+#define set_friends 1
+#define set_enemies 2
+#define are_friends 3
+#define are_enemies 4
+  
+#define no 0
+#define yes 1
+#define err (-1)
 
 using namespace std;
 
-enum Team {NONE,A,B};
+int p[maxn]; // parent of nodes
 
-int N, p[MAXN], Rank[MAXN];
-Team team[MAXN];
-
-int init(int n)
+void init_set(int sz)
 {
-	if(n >= MAXN)
-		return -1;
-	N = n;
-	for(int i=0; i<n; i++)
+	sz <<= 1;
+	for(int i = 0; i < sz; i++)
 	{
 		p[i] = i;
-		team[i] = NONE;
-		Rank[i] = 0;
-	}
-	return 0;
-}
-
-void link(int x, int y)
-{
-	if (Rank[x] > Rank[y])
-		p[y] = x;
-	else
-	{
-		p[x] = y;
-		if (Rank[x] == Rank[y])
-			Rank[y] = Rank[y] + 1;
 	}
 }
 
@@ -44,70 +38,83 @@ int find_set(int x)
 	return p[x];
 }
 
-void union_set(int x, int y)
+
+void areFriends(int x, int y, int sz)
 {
-	link(find_set(x), find_set(y));
+	int px = find_set(x);
+	int py = find_set(y);
+	int ret = (px == py) ? yes : no;
+	printf("%d\n",ret);
 }
 
-int areFriends(int u, int v)
+void areEnemies(int x, int y, int sz)
 {
-	return 0;
+	int px = find_set(x);
+	int py = find_set(y);
+	int opx = find_set(x+sz);
+	int opy = find_set(y+sz);
+	int ret = (px == opy || py == opx ) ? yes : no;
+	printf("%d\n",ret);
 }
 
-int areEnemies(int u, int v)
+void setFriends(int x, int y, int sz)
 {
-	return 0;
+	int px = find_set(x);
+	int py = find_set(y);
+	int opx = find_set(x+sz);
+	int opy = find_set(y+sz);
+	if (px == opy || py == opx)
+		printf("%d\n",err);
+	else
+	{
+		p[py] = px;
+		p[opy] = opx;
+	}
 }
 
-int setFriends(int u, int v)
+void setEnemies(int x, int y, int sz)
 {
-	return 0;
-}
-
-int setEnemies(int u, int v)
-{
-	return 0;
+	int px = find_set(x);
+	int py = find_set(y);
+	int opx = find_set(x+sz);
+	int opy = find_set(y+sz);
+	if (px == py)
+		printf("%d\n",err);
+	else
+	{
+		p[opx] = py;
+		p[opy] = px;
+	}
 }
 
 int main()
 {
-	int n, c, x, y, ret;
-	scanf("%d",&n);
-	ret = init(n);
-	if (ret)
-	{
-		printf("ERR: %d is to large!",n);
-	}
+	int sz, c, x, y;
+	scanf("%d",&sz);
+	init_set( sz );
 	while(scanf("%d %d %d",&c,&x,&y)!=EOF)
 	{
-		if (!c && !x && !y)
-			break;
+		if (!c && !x && !y) break;
 		switch(c)
 		{
-			case 1:
+			case set_friends:
 			{
-				ret = setFriends(x,y);
-				if (ret)
-					printf("%d\n",ret);
+				setFriends(x, y, sz);
 				break;
 			}
-			case 2:
+			case set_enemies:
 			{
-				ret = setEnemies(x,y);
-				if (ret)
-					printf("%d\n",ret);
+				setEnemies(x, y, sz);
 				break;
 			}
-			case 3:
+			case are_friends:
 			{
-				ret = areFriends(x,y);
-				printf("%d\n",ret);
+				areFriends(x, y, sz);
 				break;
 			}
-			case 4:
+			case are_enemies:
 			{
-				ret = areEnemies(x,y);
-				printf("%d\n",ret);
+				areEnemies(x, y, sz);
 				break;
 			}
 			default: printf("ERR: c=%d invalid option!",c);
